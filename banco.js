@@ -50,13 +50,17 @@ function tabela(){
 
 
 function depositar(valor){
-    novo_saldo = cadastrados[id_usuario].saldo + valor;
-    return novo_saldo
+    let novo_saldo_deposito = cadastrados[id_usuario].saldo + valor;
+    cadastrados[id_usuario].saldo = novo_saldo_deposito
+
+    return cadastrados[id_usuario].saldo
 }
 
 function sacar(valor){
-    novo_saldo = cadastrados[id_usuario].saldo - valor;
-    return novo_saldo
+    novo_saldo_saque = cadastrados[id_usuario].saldo - valor;
+    cadastrados[id_usuario].saldo = novo_saldo_saque
+
+    return cadastrados[id_usuario].saldo
 }
 
 function saldo(){
@@ -161,96 +165,121 @@ Nome não encontrado no sistema, Digite corretamente.
 
                 break
             }
+        }
     }
-}
     
     
     // VALIDAÇÃO DO RESTO DAS INFORMAÇÕES //
 
 
 
-console.log(`
+    console.log(`
 Agora precisamos do resto do seus dados para acessar sua conta no banco.
-`);
+    `);
 
-do{
-    if(!dados){
-        console.log(`
+    do{
+        if(!dados_validacao){
+            console.log(`
 Número do cartão ou senha inválida. Digite novamente.
-`)
-    }
+    `)
+        }
 
-    let cartao_usuario = input.question(`Digite seu número do cartão: `); //
+        let cartao_usuario = input.question(`Digite seu número do cartão: `); //
 
-    let senha_usuario = input.question(`Digite sua senha: `); //
+        let senha_usuario = input.question(`Digite sua senha: `); //
 
 
-    var dados = cartao_senha(cartao_usuario, senha_usuario);
+        var dados_validacao = cartao_senha(cartao_usuario, senha_usuario);
 
-}   while(!dados)
+    }   while(!dados_validacao);
 
-if(dados){
-    console.log(tabela())
+    if(dados_validacao){
+        console.log(tabela())
 
-    let menu = Number(input.question(`
+        var r = ' '
+
+        do{
+
+            let menu = Number(input.question(`
 O que deseja fazer?: `))
 
-    switch(menu){  
-        case 1:
+            switch(menu){  
+                case 1:
 
-            console.log(`Seu saldo é de: ${saldo()}`)
+                    console.log(`Seu saldo é de: ${saldo()}`)
 
-            var deposito = Number(input.question(`Qual valor deseja depósitar?: `))
+                    var deposito = Number(input.question(`
+Qual valor deseja depósitar?: `))
 
-            var deposito_usuario = depositar(deposito)
+                    var deposito_usuario = depositar(deposito)
 
-            console.log(`Saldo atual: ${deposito_usuario}`)
+                    console.log(`
+Saldo atual: ${deposito_usuario}`)
 
-            break;
-        
-        case 2:
+                    break;
+                
+                case 2:
 
-            console.log(`Seu saldo é de: ${saldo()}`)
+                    console.log(`Seu saldo é de: ${saldo()}`)
 
-            var saque = Number(input.question(`Qual valor deseja sacar?: `))
+                    var saque = Number(input.question(`
+Qual valor deseja sacar?: `))
 
-            var saque_usuario = sacar(saque)
+                    var saque_usuario = sacar(saque)
 
-            console.log(`Saldo atual: ${saque_usuario}`)
+                    console.log(`
+Saldo atual: ${saque_usuario}`)
 
-            break;
+                    break;
 
-        case 3:
-            console.log(`Seu saldo é : ${saldo()}`)
-            break;
-
-
-        case 4:
-            console.log(dados())
-            break;
-
-
-        case 5:
-            break;
+                case 3:
+                    console.log(`Seu saldo é : ${saldo()}`)
+                    break;
 
 
-        default:
-            console.log('Opção não encontrada.')
+                case 4:
+                    console.log(dados())
+                    break;
+
+
+                case 5:
+                    break;
+
+
+                default:
+                    console.log('Opção não encontrada.')
+                    
+            }
+
+            r = ' '
+
+            while(r != 'S' && r !='N'){
             
+                r = input.question(`
+Deseja continuar?[S/N]: `).toUpperCase().trim()[0];
+            
+                if(r != 'S' && r !='N'){
+                    console.log(`
+Aceitamos apenas [S] ou [N] como resposta, digite novamente:
+`)
+                }
+            }
+        }while(r == 'S')
 
     }
-} 
 
+        else{
+                console.log(`Seus dados estão incorretos`)
 
-else{
-        console.log(`Seus dados estão incorretos`)
+        }
 
-}
 
 }
 
 else if(resp == 'N'){
-    console.log(`Vamos criar um cadastro para você.`)
+    console.log(`
+VAMOS CRIAR UM CADASTRO PARA VOCÊ.
+`)
 
     var nome_novo_cliente = input.question(`Digite seu Nome: `).toUpperCase().trim();
 
@@ -261,7 +290,8 @@ Você não digitou a quantidade de números de um Cpf!!
             `)
         }
 
-        var cpf_novo_cliente = input.question(`Digite seu Cpf: `).trim()
+        var cpf_novo_cliente = input.question(`
+Digite seu Cpf: `).trim()
 
         var tamanho_cpf = cpf_novo_cliente.length
 
@@ -275,14 +305,16 @@ Sua senha não possui 6 digitos, Crie outra!!!
             `)
         }
 
-        var senha_novo_cliente = input.question(`Digite um sanha, de 6 dígitos: `)
+        var senha_novo_cliente = input.question(`
+Digite um sanha, de 6 dígitos: `)
 
         var tamanho_senha = senha_novo_cliente.length
 
     } while(tamanho_senha < 6 || tamanho_senha > 6);
 
 
-    var saldo_novo_cliente = Number(input.question(`Qual o valor inicial você seja depósitar na conta?: `).trim())
+    var saldo_novo_cliente = Number(input.question(`
+Qual o valor inicial você seja depósitar na conta?: `).trim())
 
     var cartao_novo_cliente = Math.floor(Math.random() * 999999999)
 
@@ -296,54 +328,78 @@ SEU CADASTRO EM NOSSO BANCO FOI CONCLUÍDO COM SUCESSO!! AGORA VOCÊ PODE TEM OP
 
     console.log(tabela())
 
-    let menu = Number(input.question(`
-O que deseja fazer?: `))
-
     id_usuario = 3
 
-    switch(menu){  
-        case 1:
+    var r = ' '
 
-            console.log(`Seu saldo é de: ${saldo()}`)
+    do{
 
-            var deposito = Number(input.question(`Qual valor deseja depósitar?: `))
+        let menu = Number(input.question(`
+O que deseja fazer?: `))
 
-            var deposito_usuario = depositar(deposito)
+        switch(menu){  
+            case 1:
 
-            console.log(`Saldo atual: ${deposito_usuario}`)
+                console.log(`Seu saldo é de: ${saldo()}`)
 
-            break;
-        
-        case 2:
+                var deposito = Number(input.question(`
+Qual valor deseja depósitar?: `))
 
-            console.log(`Seu saldo é de: ${saldo()}`)
+                var deposito_usuario = depositar(deposito)
 
-            var saque = Number(input.question(`Qual valor deseja sacar?: `))
+                console.log(`
+Saldo atual: ${deposito_usuario}`)
 
-            var saque_usuario = sacar(saque)
-
-            console.log(`Saldo atual: ${saque_usuario}`)
-
-            break;
-
-        case 3:
-            console.log(`Seu saldo é : ${saldo()}`)
-            break;
-
-
-        case 4:
-            console.log(dados())
-            break;
-
-
-        case 5:
-            break;
-
-
-        default:
-            console.log('Opção não encontrada.')
+                break;
             
+            case 2:
 
-    }
+                console.log(`Seu saldo é de: ${saldo()}`)
+
+                var saque = Number(input.question(`
+Qual valor deseja sacar?: `))
+
+                var saque_usuario = sacar(saque)
+
+                console.log(`
+Saldo atual: ${saque_usuario}`)
+
+                break;
+
+            case 3:
+                console.log(`Seu saldo é : ${saldo()}`)
+                break;
+
+
+            case 4:
+                console.log(dados())
+                break;
+
+
+            case 5:
+                break;
+
+
+            default:
+                console.log('OPÇÃO NÃO ENCOTRADA!')
+                
+
+        }
+
+        r = ' '
+
+        while(r != 'S' && r !='N'){
+
+            var r = input.question(`
+Deseja continuar?[S/N]: `).toUpperCase().trim()[0];
+
+            if(r != 'S' && r !='N'){
+                console.log(`
+Aceitamos apenas [S] ou [N] como resposta, digite novamente:
+                `)
+            }
+        }
+
+    }while(r == 'S')
         
-    }
+}
