@@ -33,10 +33,15 @@ const cartao_senha = (cartao, senha) =>{
     if(cartao == cadastrados[id_usuario].cartao && senha == cadastrados[id_usuario].senha){
         return true
     }
+
+    else{
+        return false
+    }
 }
 
 function tabela(){
-    return `[1] - DEPÓSITAR
+    return `
+[1] - DEPÓSITAR
 [2] - SACAR
 [3] - SALDO
 [4] - DADOS DA CONTA
@@ -168,15 +173,23 @@ console.log(`
 Agora precisamos do resto do seus dados para acessar sua conta no banco.
 `);
 
+do{
+    if(!dados){
+        console.log(`
+Número do cartão ou senha inválida. Digite novamente.
+`)
+    }
 
-//let cartao_usuario = input.question(`Digite seu número do cartão: `);
+    let cartao_usuario = input.question(`Digite seu número do cartão: `); //
 
-//let senha_usuario = input.question(`Digite sua senha: `);
+    let senha_usuario = input.question(`Digite sua senha: `); //
 
 
-//var dados = cartao_senha(cartao_usuario, senha_usuario);
+    var dados = cartao_senha(cartao_usuario, senha_usuario);
 
-if(true){
+}   while(!dados)
+
+if(dados){
     console.log(tabela())
 
     let menu = Number(input.question(`
@@ -226,9 +239,11 @@ O que deseja fazer?: `))
             
 
     }
-}
+} 
+
 
 else{
+        console.log(`Seus dados estão incorretos`)
 
 }
 
@@ -237,10 +252,98 @@ else{
 else if(resp == 'N'){
     console.log(`Vamos criar um cadastro para você.`)
 
-    nome = input.question(`Digite seu nome: `);
+    var nome_novo_cliente = input.question(`Digite seu Nome: `).toUpperCase().trim();
 
-    (cadastrados[cadastrados[3]] = {nome: nome})
+    do{
+        if(tamanho_cpf < 11 || tamanho_cpf > 11){
+            console.log(`
+Você não digitou a quantidade de números de um Cpf!!
+            `)
+        }
 
-    console.log(cadastrados)
+        var cpf_novo_cliente = input.question(`Digite seu Cpf: `).trim()
+
+        var tamanho_cpf = cpf_novo_cliente.length
+
+    }while(tamanho_cpf < 11 || tamanho_cpf > 11);
+
+    do{
+
+        if(tamanho_senha < 6 || tamanho_senha > 6){
+            console.log(`
+Sua senha não possui 6 digitos, Crie outra!!!
+            `)
+        }
+
+        var senha_novo_cliente = input.question(`Digite um sanha, de 6 dígitos: `)
+
+        var tamanho_senha = senha_novo_cliente.length
+
+    } while(tamanho_senha < 6 || tamanho_senha > 6);
+
+
+    var saldo_novo_cliente = Number(input.question(`Qual o valor inicial você seja depósitar na conta?: `).trim())
+
+    var cartao_novo_cliente = Math.floor(Math.random() * 999999999)
+
+    cartao_novo_cliente = String(cartao_novo_cliente)
+
+    cadastrados[3] = {id: 4, nome: nome_novo_cliente, cartao: cartao_novo_cliente, cpf: cpf_novo_cliente, senha: senha_novo_cliente, saldo: saldo_novo_cliente}
+
+    console.log(`
+SEU CADASTRO EM NOSSO BANCO FOI CONCLUÍDO COM SUCESSO!! AGORA VOCÊ PODE TEM OPÇÕES COMO CLIENTE!
+`)
+
+    console.log(tabela())
+
+    let menu = Number(input.question(`
+O que deseja fazer?: `))
+
+    id_usuario = 3
+
+    switch(menu){  
+        case 1:
+
+            console.log(`Seu saldo é de: ${saldo()}`)
+
+            var deposito = Number(input.question(`Qual valor deseja depósitar?: `))
+
+            var deposito_usuario = depositar(deposito)
+
+            console.log(`Saldo atual: ${deposito_usuario}`)
+
+            break;
+        
+        case 2:
+
+            console.log(`Seu saldo é de: ${saldo()}`)
+
+            var saque = Number(input.question(`Qual valor deseja sacar?: `))
+
+            var saque_usuario = sacar(saque)
+
+            console.log(`Saldo atual: ${saque_usuario}`)
+
+            break;
+
+        case 3:
+            console.log(`Seu saldo é : ${saldo()}`)
+            break;
+
+
+        case 4:
+            console.log(dados())
+            break;
+
+
+        case 5:
+            break;
+
+
+        default:
+            console.log('Opção não encontrada.')
+            
+
+    }
         
     }
